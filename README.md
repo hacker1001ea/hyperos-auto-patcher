@@ -1,6 +1,6 @@
 # HyperOS Patcher Engine
 
-[![Build HyperOS Mods](https://github.com/hyperos-patcher/hyperos_patcher_repo/actions/workflows/build_mods.yml/badge.svg)](https://github.com/hyperos-patcher/hyperos_patcher_repo/actions/workflows/build_mods.yml)
+[![Build HyperOS Mods](https://github.com/hacker1001ea/hyperos-auto-patcher/actions/workflows/build_mods.yml/badge.svg)](https://github.com/hacker1001ea/hyperos-auto-patcher/actions/workflows/build_mods.yml)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![Java 11+](https://img.shields.io/badge/java-11%20%7C%2017%20%7C%2021-orange.svg)](https://adoptium.net/)
 [![Target Android API](https://img.shields.io/badge/Android%20Target-API%2034%20(Android%2014%2F15)-brightgreen.svg)](https://developer.android.com/)
