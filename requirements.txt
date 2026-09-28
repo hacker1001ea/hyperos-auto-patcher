@@ -1,0 +1,6 @@
+# HyperOS Patcher Engine
+# O núcleo do patcher utiliza estritamente a biblioteca padrão do Python (Zero Dependencies).
+# As ferramentas abaixo são opcionais para desenvolvimento, linters e testes avançados.
+
+pytest>=7.0.0
+flake8>=6.0.0

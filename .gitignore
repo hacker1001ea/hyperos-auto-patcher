@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes e Testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Diretórios de Trabalho e Saída Temporária do Patcher
+output/
+work/
+build/
+*.tmp
+*.bak
+*.dex
+
+# Binários pesados de entrada (manter apenas .gitkeep rastreado)
+input/*
+!input/.gitkeep
+!input/README.md
+
+# Ferramentas JAR locais (opcionalmente baixadas pelo script ou CI)
+tools/*.jar
+!tools/.gitkeep
+
+# IDEs e Sistema Operacional
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

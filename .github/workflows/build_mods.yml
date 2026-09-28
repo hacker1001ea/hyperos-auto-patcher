@@ -1,0 +1,107 @@
+name: Build HyperOS Mods
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      mod:
+        description: 'Qual mod compilar'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - floating-windows
+          - enhanced-keyboard
+      max_windows:
+        description: 'Limite máximo de Janelas Flutuantes ativas'
+        required: false
+        default: '6'
+      api_level:
+        description: 'Target API Level do Smali Assembler'
+        required: false
+        default: '34'
+
+jobs:
+  build:
+    name: Build & Package Mods
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17 (OpenJDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Dependências
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Baixar Ferramentas Smali / Baksmali
+        run: |
+          mkdir -p tools
+          if [ ! -f tools/smali.jar ]; then
+            curl -L -o tools/smali.jar https://repo1.maven.org/maven2/org/smali/smali/2.5.2/smali-2.5.2.jar
+          fi
+          if [ ! -f tools/baksmali.jar ]; then
+            curl -L -o tools/baksmali.jar https://repo1.maven.org/maven2/org/smali/baksmali/2.5.2/baksmali-2.5.2.jar
+          fi
+          ls -la tools/
+
+      - name: Executar Testes Unitários de Integridade
+        run: |
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Executar Pipeline de Patches
+        run: |
+          MOD_SELECTION="${{ github.event.inputs.mod || 'all' }}"
+          MAX_WIN="${{ github.event.inputs.max_windows || '6' }}"
+          API_LVL="${{ github.event.inputs.api_level || '34' }}"
+          
+          echo "Executando patch_runner com mod=$MOD_SELECTION max_windows=$MAX_WIN api=$API_LVL..."
+          python scripts/patch_runner.py \
+            --input-dir input \
+            --output-dir output \
+            --mod "$MOD_SELECTION" \
+            --max-windows "$MAX_WIN" \
+            --api "$API_LVL" \
+            --tools-dir tools
+
+      - name: Upload dos Módulos Magisk / KernelSU
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HyperOS-Magisk-Modules
+          path: output/modules/*.zip
+          if-no-files-found: ignore
+
+      - name: Upload dos Arquivos Prontos para Bake
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HyperOS-ROM-Bake-Files
+          path: output/bake_files/
+          if-no-files-found: ignore
+
+      - name: Upload dos Binários Patcheados (JARs / APKs)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HyperOS-Patched-Binaries
+          path: |
+            output/*.jar
+            output/*.apk
+          if-no-files-found: ignore
